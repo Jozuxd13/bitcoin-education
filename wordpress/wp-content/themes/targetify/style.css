@@ -1,0 +1,74 @@
+/*
+Theme Name: Targetify
+Theme URI: https://cozythemes.com/targetify-free-wordpress-theme-for-digital-agency/
+Author: CozyThemes
+Author URI: https://cozythemes.com/
+Description: Meet Targetify, a dynamic WordPress theme derived from the robust FotaWP, redefines website creation for digital agencies, startups, marketing agency and corporate businesses. With block-based full site editing capabilities and a sleek, minimalist design, Targetify offers unparalleled versatility for creating captivating online presences. Whether for a tech company, counseling service, marketing agency or consulting firm, Targetify empowers users to effortlessly showcase their brand and services with finesse, making it the ultimate solution for crafting compelling agency websites. Explore more about Targetify at https://cozythemes.com/targetify-free-wordpress-theme-for-digital-agency/
+Template: fotawp
+Version: 1.0.1
+Requires at least: 5.9
+Tested up to: 6.5
+Requires PHP: 7.0
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
+Text Domain: targetify
+Tags: blog, one-column, custom-background, custom-colors, custom-logo, custom-menu, editor-style, featured-images, e-commerce, full-site-editing, block-patterns, full-width-template, rtl-language-support, threaded-comments, translation-ready, block-styles, wide-blocks
+*/
+.wp-block-buttons.fotaagency-buttons-with-icon .wp-block-button__link img {
+  margin-bottom: -8px;
+}
+nav.wp-block-navigation ul li a:hover,
+.wp-block-button.is-style-outline a:hover {
+  color: var(--wp--preset--color--primary) !important;
+}
+.entry-content.wp-block-post-content a,
+.wp-block-comment-content a,
+p a {
+  text-decoration: underline;
+}
+.wp-block-cover.targetify-portfolio-box {
+  background: #000;
+}
+
+.wp-block-cover.targetify-portfolio-box:hover .wp-block-cover__image-background {
+  transform: scale(0.85);
+  -webkit-transform: scale(0.85);
+  -moz-transform: scale(0.85);
+  opacity: 0.3;
+}
+.wp-block-button.is-style-button-hover-secondary-bgcolor a.wp-block-button__link.wp-element-button:hover {
+  border-color: var(--wp--preset--color--secondary) !important;
+}
+.wp-block-button.is-style-button-hover-primary-bgcolor a.wp-block-button__link.wp-element-button:hover {
+  border-color: var(--wp--preset--color--primary) !important;
+}
+.wp-block-group.banner-cta {
+  margin-top: -370px !important;
+  position: relative;
+}
+.wp-block-group.targetify-banner-section {
+  background-size: 100% 100% !important;
+  background-position: right top;
+}
+.wp-block-cover.targetify-team-box {
+  position: relative;
+  overflow: hidden;
+}
+.wp-block-cover.targetify-team-box ul.wp-block-social-links {
+  transition: all ease 0.23s;
+  opacity: 0;
+  transform: translateY(30px);
+}
+.wp-block-cover.targetify-team-box:hover ul.wp-block-social-links {
+  transform: translateY(0px);
+  opacity: 1;
+}
+.wp-block-cover.targetify-team-box span.wp-block-cover__background {
+  transition: all ease 0.23s;
+}
+.wp-block-cover.targetify-team-box:hover span.wp-block-cover__background {
+  opacity: 0.5;
+}
+.wp-block-cover.targetify-team-box:hover img.wp-block-cover__image-background {
+  transform: scale(1.1);
+}
