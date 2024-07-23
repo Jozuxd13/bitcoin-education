@@ -49,7 +49,7 @@ function targetify_register_pattern_category()
 }
 add_action('init', 'targetify_register_pattern_category', 9);
 
-function create_books_cpt() {
+function CPT_books() {
     $labels = array(
         'name'                  => __( 'Books' ),
         'singular_name'         => __( 'Book' ),
@@ -85,93 +85,52 @@ function create_books_cpt() {
 
     register_post_type( 'books', $args );
 }
-add_action( 'init', 'create_books_cpt' );
+add_action( 'init', 'CPT_books' );
 
-// Hook into the 'add_meta_boxes' action to add a meta box to the 'books' post type
-function add_book_meta_boxes() {
-    add_meta_box(
-        'book_details',             // ID of the meta box
-        'Book Details',             // Title of the meta box
-        'display_book_meta_box',    // Callback function to display the content of the meta box
-        'books',                    // Post type where the meta box will be displayed
-        'normal',                   // Context where the meta box will appear (normal, side, or advanced)
-        'high'                      // Priority of the meta box
-    );
-}
-add_action('add_meta_boxes', 'add_book_meta_boxes');
-
-// Callback function to display the fields in the meta box
-function display_book_meta_box($post) {
-    // Retrieve existing values from post meta
-    $title = get_post_meta($post->ID, 'book_title', true);
-    $description = get_post_meta($post->ID, 'book_description', true);
-    $image = get_post_meta($post->ID, 'book_image', true);
-    $year = get_post_meta($post->ID, 'book_year', true);
-    ?>
-    <p>
-        <label for="book_title">Title:</label>
-        <input type="text" id="book_title" name="book_title" value="<?php echo esc_attr($title); ?>" />
-    </p>
-    <p>
-        <label for="book_description">Description:</label>
-        <textarea id="book_description" name="book_description"><?php echo esc_textarea($description); ?></textarea>
-    </p>
-    <p>
-        <label for="book_image">Image URL:</label>
-        <input type="text" id="book_image" name="book_image" value="<?php echo esc_url($image); ?>" />
-    </p>
-    <p>
-        <label for="book_year">Publication Year:</label>
-        <input type="text" id="book_year" name="book_year" value="<?php echo esc_attr($year); ?>" />
-    </p>
-    <?php
-}
-
-// Save the meta box data when the post is saved
-function save_book_meta_box_data($post_id) {
-    // Check if this is an autosave, if so, return
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-        return;
-    }
-
-    // Check if the user has permissions to save data
-    if (!isset($_POST['book_title']) || !isset($_POST['book_description']) || !isset($_POST['book_image']) || !isset($_POST['book_year'])) {
-        return;
-    }
-
-    // Sanitize and save the meta box data
-    update_post_meta($post_id, 'book_title', sanitize_text_field($_POST['book_title']));
-    update_post_meta($post_id, 'book_description', sanitize_textarea_field($_POST['book_description']));
-    update_post_meta($post_id, 'book_image', esc_url_raw($_POST['book_image']));
-    update_post_meta($post_id, 'book_year', sanitize_text_field($_POST['book_year']));
-}
-add_action('save_post', 'save_book_meta_box_data');
-
-function books_shortcode() {
+function display_books_shortcode() {
     $args = array(
         'post_type' => 'books',
         'posts_per_page' => -1,
     );
-    $query = new WP_Query($args);
-    $output = '<div class="books-list">';
-    while ($query->have_posts()) {
-        $query->the_post();
-        $title = get_post_meta(get_the_ID(), 'book_title', true);
-        $description = get_post_meta(get_the_ID(), 'book_description', true);
-        $image = get_post_meta(get_the_ID(), 'book_image', true);
-        $year = get_post_meta(get_the_ID(), 'book_year', true);
+    $books_query = new WP_Query($args);
 
-        $output .= '<div class="book">';
-        if ($image) {
-            $output .= '<div class="book-thumbnail"><img src="' . esc_url($image) . '" alt="' . esc_attr($title) . '"></div>';
+    if ($books_query->have_posts()) {
+        $output = '<div class="books-container">';
+
+        while ($books_query->have_posts()) {
+            $books_query->the_post();
+            $title = get_the_title('title');
+            $description = get_field('description'); 
+            $year = get_field('year_of_publication'); 
+            $author = get_field('author'); 
+            $image = get_field('image'); 
+
+            $output .= '<div class="book">';
+            if ($image) {
+                $output .= '<div class="book-image"><img src="' . esc_url($image['url']) . '" alt="' . esc_attr($title) . '"></div>';
+            }
+            if ($title) {
+                $output .= '<h2 class="book-title">' . esc_html($title) . '</h2>';
+            }
+            if ($author) {
+                $output .= '<h2 class="book-author">' . esc_html($author) . '</h2>';
+            }
+            if ($year) {
+                $output .= '<p class="book-year">' . esc_html($year) . '</p>';
+            }
+            if ($description) {
+                $output .= '<p class="book-description">' . esc_html($description) . '</p>';
+            }
+            $output .= '</div>';
         }
-        $output .= '<h2>' . esc_html($title) . '</h2>';
-        $output .= '<div class="book-description">' . esc_html($description) . '</div>';
-        $output .= '<p><strong>Year:</strong> ' . esc_html($year) . '</p>';
+
         $output .= '</div>';
+    } else {
+        $output = '<p>No books found.</p>';
     }
-    $output .= '</div>';
+
     wp_reset_postdata();
     return $output;
 }
-add_shortcode('books', 'books_shortcode');
+add_shortcode('display_books', 'display_books_shortcode');
+
