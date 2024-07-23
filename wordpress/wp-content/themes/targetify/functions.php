@@ -89,48 +89,130 @@ add_action( 'init', 'CPT_books' );
 
 function display_books_shortcode() {
     $args = array(
-        'post_type' => 'books',
-        'posts_per_page' => -1,
+      'post_type' => 'books',
+      'posts_per_page' => -1,
     );
     $books_query = new WP_Query($args);
-
+  
     if ($books_query->have_posts()) {
-        $output = '<div class="books-container">';
-
-        while ($books_query->have_posts()) {
-            $books_query->the_post();
-            $title = get_the_title('title');
-            $description = get_field('description'); 
-            $year = get_field('year_of_publication'); 
-            $author = get_field('author'); 
-            $image = get_field('image'); 
-
-            $output .= '<div class="book">';
-            if ($image) {
-                $output .= '<div class="book-image"><img src="' . esc_url($image['url']) . '" alt="' . esc_attr($title) . '"></div>';
-            }
-            if ($title) {
-                $output .= '<h2 class="book-title">' . esc_html($title) . '</h2>';
-            }
-            if ($author) {
-                $output .= '<h2 class="book-author">' . esc_html($author) . '</h2>';
-            }
-            if ($year) {
-                $output .= '<p class="book-year">' . esc_html($year) . '</p>';
-            }
-            if ($description) {
-                $output .= '<p class="book-description">' . esc_html($description) . '</p>';
-            }
-            $output .= '</div>';
+      $output = '<div class="card-container">';
+  
+      while ($books_query->have_posts()) {
+        $books_query->the_post();
+        $title = get_the_title();
+        $description = get_field('description');
+        $year = get_field('year_of_publication');
+        $author = get_field('author');
+        $image = get_field('image');
+  
+        $output .= '<div class="book">';
+        $output .= '<div class="row">';
+        if ($image) {
+          $output .= '<div class="book-image"><img src="' . esc_url($image['url']) . '" alt="' . esc_attr($title) . '"></div>';
         }
-
+        $output .= '<div class="card-content">';
+        if ($title) {
+          $output .= '<p class="card-title">' . esc_html($title) . '</p>';
+        }
+        if ($author) {
+          $output .= '<p class="card-author">' . esc_html($author) . '</p>';
+        }
+        if ($year) {
+          $output .= '<p class="card-year">' . esc_html($year) . '</p>';
+        }
+        if ($description) {
+          $output .= '<p class="card-description">' . esc_html($description) . '</p>';
+        }
         $output .= '</div>';
+        $output .= '</div>';
+        $output .= '</div>';
+      }
+  
+      $output .= '</div>';
     } else {
-        $output = '<p>No books found.</p>';
+      $output = '<p>No books found.</p>';
     }
-
+  
     wp_reset_postdata();
     return $output;
+  }
+  
+  add_shortcode('display_books', 'display_books_shortcode');
+
+function custom_shortcode_styles() {
+    echo '
+    <style>
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: row;
+        width: 80%;
+        max-width: 600px;
+        margin: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card-image {
+        width: 123px;
+        height: 198px;
+        margin-right: 20px;
+    }
+
+    .card-content {
+        flex: 1;
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #12A86B;
+    }
+
+    .card-author, .card-year {
+        font-size: 1em;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .card-description {
+        font-size: 1em;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 246px) {
+        .card {
+            flex-direction: column; /* Las tarjetas se apilan en vertical en pantallas pequeñas */
+        }
+
+        .card-image {
+            width: 60%; /* La imagen ocupa todo el ancho en pantallas pequeñas */
+            margin-right: 0;
+        }
+
+        .card-content {
+            margin-top: 20px; /* Espacio entre la imagen y el texto en pantallas pequeñas */
+        }
+    }
+    </style>
+    ';
 }
-add_shortcode('display_books', 'display_books_shortcode');
+add_action('wp_head', 'custom_shortcode_styles');
+
 
