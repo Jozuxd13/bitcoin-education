@@ -198,21 +198,101 @@ function custom_shortcode_styles() {
 
     @media (max-width: 246px) {
         .card {
-            flex-direction: column; /* Las tarjetas se apilan en vertical en pantallas pequeñas */
+            flex-direction: column; 
         }
 
         .card-image {
-            width: 60%; /* La imagen ocupa todo el ancho en pantallas pequeñas */
+            width: 60%; 
             margin-right: 0;
         }
 
         .card-content {
-            margin-top: 20px; /* Espacio entre la imagen y el texto en pantallas pequeñas */
+            margin-top: 20px; 
         }
     }
     </style>
     ';
 }
 add_action('wp_head', 'custom_shortcode_styles');
+
+#API data
+function get_bitcoin_price() {
+    $response = wp_remote_get('https://mempool.space/api/v1/prices');
+    if (is_wp_error($response)) {
+        return 'Error fetching price.';
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (isset($data['USD'])) {
+        return number_format($data['USD'],2);
+    }
+
+    return 'Price not available.';
+}
+
+#register a custom sidebar
+function register_custom_sidebar() {
+    register_sidebar(array(
+        'name'          => 'Bitcoin Price Sidebar',
+        'id'            => 'bitcoin_price_sidebar',
+        'before_widget' => '<div class="widget">',
+        'after_widget'  => '</div>',
+        'before_title'  => '<h2 class="widgettitle">',
+        'after_title'   => '</h2>',
+    ));
+}
+add_action('widgets_init', 'register_custom_sidebar');
+
+#To create a Widget
+class Bitcoin_Price_Widget extends WP_Widget {
+    function __construct() {
+        parent::__construct(
+            'bitcoin_price_widget',
+            __('Bitcoin Price Widget', 'text_domain'),
+            array('description' => __('Displays the current Bitcoin price', 'text_domain'))
+        );
+    }
+
+    public function widget($args, $instance) {
+        echo $args['before_widget'];
+        echo '<p>Current Bitcoin Price: $' . get_bitcoin_price() . '</p>';
+        echo $args['after_widget'];
+    }
+}
+
+function register_bitcoin_price_widget() {
+    register_widget('Bitcoin_Price_Widget');
+}
+add_action('widgets_init', 'register_bitcoin_price_widget');
+
+function bitcoin_price_widget_styles() {
+    echo '
+    <style>
+    .widget {
+        background-color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center; /* Centra el texto del widget */
+    }
+    .widget p {
+        font-size: 18px;
+    }
+    @media (max-width: 768px) {
+        .widget p {
+            font-size: 20px;
+        }
+    }
+    @media (max-width: 480px) {
+        .widget p {
+            font-size: 16px;
+        }
+    }
+    </style>
+    ';
+}
+add_action('wp_head', 'bitcoin_price_widget_styles');
+
 
 

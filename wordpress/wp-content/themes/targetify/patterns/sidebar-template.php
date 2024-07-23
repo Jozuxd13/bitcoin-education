@@ -10,6 +10,7 @@ $targetify_images = array(
     $targetify_url . 'assets/images/pattern_sidebar.jpg',
 );
 ?>
+
 <!-- wp:group {"layout":{"type":"constrained"}} -->
 <div class="wp-block-group"><!-- wp:group {"style":{"spacing":{"margin":{"bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained"}} -->
     <div class="wp-block-group" style="margin-bottom:var(--wp--preset--spacing--60)"><!-- wp:search {"label":"Search","showLabel":false,"placeholder":"Search...","buttonText":"Search","buttonPosition":"button-inside","style":{"border":{"radius":"0px","width":"1px","color":"#e3e6ec"}},"fontSize":"small"} /--></div>
@@ -127,4 +128,3 @@ $targetify_images = array(
     </div>
     <!-- /wp:group -->
 </div>
-<!-- /wp:group -->
