@@ -262,11 +262,13 @@ class Bitcoin_Price_Widget extends WP_Widget {
     }
 }
 
+#register for widget
 function register_bitcoin_price_widget() {
     register_widget('Bitcoin_Price_Widget');
 }
 add_action('widgets_init', 'register_bitcoin_price_widget');
 
+#adding a little style with CSS to the widget
 function bitcoin_price_widget_styles() {
     echo '
     <style>
@@ -274,7 +276,7 @@ function bitcoin_price_widget_styles() {
         background-color: white;
         padding: 20px;
         margin-bottom: 20px;
-        text-align: center; /* Centra el texto del widget */
+        text-align: center; 
     }
     .widget p {
         font-size: 18px;
