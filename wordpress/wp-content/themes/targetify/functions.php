@@ -49,6 +49,7 @@ function targetify_register_pattern_category()
 }
 add_action('init', 'targetify_register_pattern_category', 9);
 
+//To create Custom Post Type for Books
 function CPT_books() {
     $labels = array(
         'name'                  => __( 'Books' ),
@@ -87,6 +88,7 @@ function CPT_books() {
 }
 add_action( 'init', 'CPT_books' );
 
+//shortcode for books
 function display_books_shortcode() {
     $args = array(
       'post_type' => 'books',
@@ -139,6 +141,7 @@ function display_books_shortcode() {
   
   add_shortcode('display_books', 'display_books_shortcode');
 
+//CCS styling for books
 function custom_shortcode_styles() {
     echo '
     <style>
@@ -285,7 +288,7 @@ function bitcoin_price_shortcode() {
 }
 add_shortcode('bitcoin_price', 'bitcoin_price_shortcode');
 
-// Añadir CSS styling al shortcode
+// CSS styling to shortcode
 function bitcoin_price_widget_styles() {
     echo '
     <style>
