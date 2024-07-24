@@ -232,7 +232,8 @@ function get_bitcoin_price() {
     return 'Price not available.';
 }
 
-#register a custom sidebar
+
+#TO CREATE A SIDEBAR AND WIDGET
 function register_custom_sidebar() {
     register_sidebar(array(
         'name'          => 'Bitcoin Price Sidebar',
@@ -245,7 +246,6 @@ function register_custom_sidebar() {
 }
 add_action('widgets_init', 'register_custom_sidebar');
 
-#To create a Widget
 class Bitcoin_Price_Widget extends WP_Widget {
     function __construct() {
         parent::__construct(
@@ -256,45 +256,66 @@ class Bitcoin_Price_Widget extends WP_Widget {
     }
 
     public function widget($args, $instance) {
+        $price = get_bitcoin_price();
         echo $args['before_widget'];
-        echo '<p>Current Bitcoin Price: $' . get_bitcoin_price() . '</p>';
+        echo '<div class="bitcoin-price-widget">';
+        echo '<p>Current Bitcoin Price: $' . esc_html($price) . '</p>';
+        echo '</div>';
         echo $args['after_widget'];
     }
 }
 
-#register for widget
+
 function register_bitcoin_price_widget() {
     register_widget('Bitcoin_Price_Widget');
 }
 add_action('widgets_init', 'register_bitcoin_price_widget');
 
-#adding a little style with CSS to the widget
+
+// Shortcode to show the current bitcoin price
+function bitcoin_price_shortcode() {
+    $price = get_bitcoin_price();
+    ob_start();
+    ?>
+    <div class="bitcoin-price-widget">
+        <p>Current Bitcoin Price: $<?php echo esc_html($price); ?></p>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('bitcoin_price', 'bitcoin_price_shortcode');
+
+// Añadir CSS styling al shortcode
 function bitcoin_price_widget_styles() {
     echo '
     <style>
-    .widget {
+    .bitcoin-price-widget {
         background-color: white;
         padding: 20px;
         margin-bottom: 20px;
         text-align: center; 
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-    .widget p {
+    .bitcoin-price-widget p {
         font-size: 18px;
     }
     @media (max-width: 768px) {
-        .widget p {
-            font-size: 20px;
+        .bitcoin-price-widget p {
+            font-size: 16px;
         }
     }
     @media (max-width: 480px) {
-        .widget p {
-            font-size: 16px;
+        .bitcoin-price-widget p {
+            font-size: 14px;
         }
     }
     </style>
     ';
 }
 add_action('wp_head', 'bitcoin_price_widget_styles');
+
 
 
 
